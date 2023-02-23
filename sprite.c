@@ -21,9 +21,38 @@ Sprite* Sprite_create(Texture2D* texture, int x, int y, int width, int height, V
   Rectangle destRect = { (float)x, (float)y, (float)width, (float)height };
   sprite_->destRect = destRect;
 
+  sprite_->animated = false;
+
   sprite_count++;
 
   return sprite_;
+}
+
+void Sprite_createAnimation(Sprite *self, int cell, int speed)
+{
+  // create horizontal slicing
+  self->animated = true;
+  self->frameCounter = 0;
+  self->frameCells = cell;
+  self->animationSpeed = speed;
+  self->currentFrame = 0;
+
+  int newRect = self->srcRect.width / self->frameCells;
+  self->srcRect.width = newRect; 
+}
+
+void Sprite_update(Sprite *self, const int *frameRate)
+{
+  if (self->animated)
+  {
+    self->frameCounter++; 
+    if (self->frameCounter >= *frameRate/self->animationSpeed)
+    {
+      self->frameCounter = 0;
+      self->currentFrame = (self->currentFrame + 1) % self->frameCells;
+      self->srcRect.x = self->srcRect.width * self->currentFrame;
+    }
+  }
 }
 
 void Sprite_draw(Sprite *self)
