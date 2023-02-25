@@ -6,6 +6,13 @@
 
 extern int sprite_count;
 
+typedef struct AnimationClip
+{
+  const char* name;
+  unsigned int frames;
+  unsigned int speed;
+} AnimationClip;
+
 typedef struct Sprite{
   int x, y;
   int w, h;
@@ -16,12 +23,16 @@ typedef struct Sprite{
   bool animated;
   int frameCounter;
   int frameCells;
-  int animationSpeed;
   int currentFrame;
+  unsigned int clipCount;
+  AnimationClip* clips_;
+  int currentClip;
 
 } Sprite;
 Sprite* Sprite_create(Texture2D* texture, int x, int y, int width, int height, Vector2 pivot);
-void Sprite_createAnimation(Sprite* self, int frameCells, int animationSpeed);
+AnimationClip* Sprite_createAnimation(Sprite* self, unsigned int cells, unsigned int clips);
+void Animation_addCLip(Sprite* self, unsigned int clipIndex, unsigned int frames, unsigned int speed, const char* name);
+void Animation_playClip(Sprite* self, char* name);
 void Sprite_update(Sprite* self, const int* frameRate);
 void Sprite_draw(Sprite* self);
 void Sprite_destroy(Sprite* self);
