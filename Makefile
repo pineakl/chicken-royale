@@ -376,6 +376,7 @@ endif
 #------------------------------------------------------------------------------------------------
 PROJECT_SOURCE_FILES ?= \
     main.c \
+		entity.c \
 		sprite.c
 
 # Define all object files from source files

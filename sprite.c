@@ -1,31 +1,28 @@
 #include "engine.h"
 #include <raylib.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-int sprite_count = 0;
-
-Sprite* Sprite_create(Texture2D* texture, int x, int y, int width, int height, Vector2 pivot) 
+void Sprite_create(Entity *entity, Texture2D *texture) 
 {
-  Sprite* sprite_ = (Sprite*) malloc(sizeof(Sprite));
-  sprite_->x = x;
-  sprite_->y = y; 
-  
-   Vector2 origin = { pivot.x * width, pivot.y * height };
-  sprite_->origin = origin;
+  int component_id = 0;
+  Sprite* sprite_ = (Sprite*) malloc(sizeof(Sprite)); 
 
-  sprite_->srcTexture = texture;
-  
-  Rectangle srcRect = { 0.0f, 0.0f, (float)texture->width, (float)texture->height };
-  sprite_->srcRect = srcRect;
+  if (sprite_ != NULL)
+  {
+    sprite_->srcTexture = texture;
+    
+    Rectangle srcRect = { 0.0f, 0.0f, (float)texture->width, (float)texture->height };
+    sprite_->srcRect = srcRect;
 
-  Rectangle destRect = { (float)x, (float)y, (float)width, (float)height };
-  sprite_->destRect = destRect;
-
-  sprite_->animated = false;
-
-  sprite_count++;
-
-  return sprite_;
+    Rectangle destRect = { (float)entity->x, (float)entity->y, (float)entity->w, (float)entity->h };
+    sprite_->destRect = destRect;
+    sprite_->animated = false;
+    
+    entity->ptr_component[component_id] = sprite_;
+    sprite_->entity_ = entity;
+    printf("%p\n", sprite_);
+  }
 }
 
 AnimationClip* Sprite_createAnimation(Sprite *self, unsigned int cell, unsigned int clips)
@@ -92,14 +89,18 @@ void Sprite_update(Sprite *self, const int *frameRate)
 void Sprite_draw(Sprite *self)
 {
   Texture2D* pTexture = self->srcTexture;
-  DrawTexturePro(*pTexture, self->srcRect, self->destRect, self->origin, 0, WHITE);
+  DrawTexturePro(*pTexture, self->srcRect, self->destRect, self->entity_->origin, 0, WHITE);
 }
 
 void Sprite_destroy(Sprite *self)
 {
-  sprite_count--;
+  printf("clips %p \n", self->clips_);
+  /*
   free(self->clips_);
   self->clips_ = NULL;
+  free(self);
+  self = NULL;
+    */
   free(self);
   self = NULL;
 }
