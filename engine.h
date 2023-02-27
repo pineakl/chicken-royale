@@ -12,6 +12,7 @@ typedef struct Entity
 {
   int x, y, w, h;
   Vector2 origin;
+  char component_mask[2];
   void* ptr_component[2];
 } Entity;
 
@@ -57,8 +58,13 @@ void Sprite_destroy(Sprite* self);
 typedef struct Physics 
 {
   Entity* entity;
+  int accG;
+  int curG;
+  int maxG;
 } Physics ;
 
-Physics* Physics_create(Entity* entity);
+void Physics_create(Entity* entity);
+void Physics_update(Physics* self);
+void Physics_destroy(Physics* self);
 
 #endif // _ENGINE_H_

@@ -20,8 +20,8 @@ void Sprite_create(Entity *entity, Texture2D *texture)
     sprite_->animated = false;
     
     entity->ptr_component[component_id] = sprite_;
+    entity->component_mask[component_id] = '1';
     sprite_->entity_ = entity;
-    printf("%p\n", sprite_);
   }
 }
 
@@ -73,6 +73,7 @@ void Animation_playClip(Sprite *self, char *name)
 
 void Sprite_update(Sprite *self, const int *frameRate)
 {
+  printf("debug\n");
   if (self->animated)
   {
     self->frameCounter++; 
@@ -84,17 +85,19 @@ void Sprite_update(Sprite *self, const int *frameRate)
       self->srcRect.y = self->srcRect.height * self->currentClip;
     }
   }
+
+  //self->destRect.y = self->entity_->y;
 }
 
 void Sprite_draw(Sprite *self)
 {
   Texture2D* pTexture = self->srcTexture;
+  self->destRect.y = self->entity_->y;
   DrawTexturePro(*pTexture, self->srcRect, self->destRect, self->entity_->origin, 0, WHITE);
 }
 
 void Sprite_destroy(Sprite *self)
 {
-  printf("clips %p \n", self->clips_);
   /*
   free(self->clips_);
   self->clips_ = NULL;

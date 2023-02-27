@@ -19,6 +19,11 @@ Entity* Entity_create(int x, int y, int width, int height, Vector2 pivot)
     entity->origin = origin;
     printf("origin %f \n", origin.x);
     
+
+    for (size_t i = 0; i < 2; i++) {
+      entity->component_mask[i] = '0';
+    }
+
     entities++;
 
     return entity;
@@ -35,6 +40,8 @@ void Entity_destroy(Entity *entity)
 
   // free all childs
   Sprite* sprite = (Sprite*)entity->ptr_component[0];
-  printf("clearing %p\n", sprite);
   Sprite_destroy(sprite);
+  
+  Physics* physics = (Physics*)entity->ptr_component[1];
+  Physics_destroy(physics);
 }

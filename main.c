@@ -21,22 +21,45 @@ int main (void)
   Entity* bg_ = Entity_create(_screenWidth/2, _screenHeight/2, bg_png.width*2, bg_png.height*2, pivot_center);
   Sprite_create(bg_, &bg_png);
 
-  Entity* arrEntity = {bg_};
+  Entity* chicken_ = Entity_create(_screenWidth/2, _screenHeight/2, 64, 64, pivot_center);
+  Sprite_create(chicken_, &chicken_png);
+  Sprite_createAnimation(chicken_->ptr_component[0], 6, 2);
+  //Animation_addCLip(chicken_->ptr_component[0], 0, 2, 10, "fall");
+  //Animation_playClip(chicken_->ptr_component[0], "fall");
+  
+  Physics_create(chicken_);
+
+  Entity* arrEntity[] = {bg_, chicken_};
 
   SetTargetFPS(_targetFps);
   while (!WindowShouldClose()) {
 
-    BeginDrawing();
-    
-    ClearBackground(BLACK);
-    for (size_t i = 0; i < entities; i++) {
-      Sprite_draw(arrEntity[i].ptr_component[0]);
+    for (size_t i = 0; i < entities; i++) { 
+      if (arrEntity[i]->component_mask[1] == '1')
+        Physics_update(arrEntity[i]->ptr_component[1]);
+
+      /*
+      if (arrEntity[i]->component_mask[0] == '1')
+        Sprite_update(arrEntity[i]->ptr_component[0], &_targetFps);
+        */
+    }    
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) 
+    {
+      chicken_->y = 0;
     }
 
+    BeginDrawing();
+    ClearBackground(BLACK);
+    for (size_t i = 0; i < entities; i++) {
+        if (arrEntity[i]->component_mask[0] == '1')
+          Sprite_draw(arrEntity[i]->ptr_component[0]);
+        
+    }
     EndDrawing();
   }
 
-  Entity_destroy(&arrEntity[0]);
+  //Entity_destroy(&arrEntity[0]);
 
   UnloadTexture(bg_png);
   UnloadTexture(chick_png);
